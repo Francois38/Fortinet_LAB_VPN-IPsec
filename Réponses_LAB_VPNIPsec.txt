@@ -1,0 +1,32 @@
+1/ On identifie l'adresse IP du port 1 (administration) dans la console de HQ avec la commande 'get system interface physical'
+On rentre l'adresse IP dans un navigateur web, on se log avec "admin"
+On change le Hostname dans System --> Settings
+On peut vérifier les interfaces (Networks --> Interfaces),
+les policy dans Policy & Objects --> IPv4 Policy
+On effectue un ping sur l'adresse de Branch "execute ping 192.168.122.59" depuis la console 
+
+2/ On se connecte à Branch via un navigateur web. On change le nom (System --> Settings).
+Dans Networks --> Interfaces on configure port2 "Internet", Role WAN, Addressing mode DHCP.
+Port 3 "Lan", Role LAN, Addressing Mode Manual, IP/Mask : 192.168.61.1/24, Admin Access : HTTPS, SSH, PING, SNMP, RADIUS.
+On active DHCP Server (range automatique). DNS server specify 1.1.1.1.
+Device Detection.
+On crée une policy (Policy & Objects --> IPv4 Policy)
+
+3/ Successivement dans HQ puis dans Branch, on va dans VPN --> IPsec Wizard
+Etape 1 : Name: HQ-to-Branch; Type: Site to Site; Remote Device : FortiGate; NAT Config : No NAT between site
+Etape 2 : Remote Device : IP Address; IP address:(adresse IP "externe" port 2 de Branch); Interface : WAN; Auth Method : Pre-shared Key;
+Pre-shared Key : "testtest" (mot de passe)
+Etape 3 : Local Interface : LAN; Local Subnets : adresse réseau local de HQ 192.168.60.0/24; Remote Subnets : adresse réseau local de Branch 192.168.61.0/24
+
+On vérifie dans Network-->Interfaces sous le port WAN on a bien une sous interface HQ-to-Branch
+Egalement dans Policy & Objects --> IPv4 Policy (2 policies crées);
+Policy & Objects --> Addresses (2 subnets configurés)
+Network --> Static Routes (2 routes)
+
+4/ Pour monter la connectivité on crée du trafic depuis un poste du LAN de HQ on ping un poste du LAN de Branch
+et inversement. On vérifie les logs : Log & Report --> VPN Events pour voire les actions et les status
+
+
+5/On va dans le menu VPN --> IPsec Tunnels :
+On double clique sur notre VPN et on accède à ses paramètres
+VPN --> SSL-VPN Settings
